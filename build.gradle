@@ -1,0 +1,81 @@
+buildscript {
+	ext {
+		springBootVersion = '2.0.0.M5'
+	}
+	repositories {
+		mavenLocal()
+        jcenter()
+        mavenCentral()
+    	maven { url 'https://repo.spring.io/libs-snapshot' }
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+	}
+}
+
+apply plugin: 'java'
+apply plugin: 'war'
+apply plugin: 'eclipse'
+apply plugin: 'io.spring.dependency-management'
+
+group = 'com.study'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = 1.8
+
+repositories {
+	maven {
+    	url 'https://repo.spring.io/libs-milestone'
+    }
+	mavenLocal()
+    jcenter()
+    mavenCentral()
+    maven { url "http://192.168.94.25:8081/nexus/content/repositories/releases/" }
+    maven { url "http://192.168.94.25:8081/nexus/content/repositories/snapshots/" }
+    maven { url "http://192.168.94.25:8081/nexus/content/repositories/bio/" }
+    maven { url 'https://repo.spring.io/libs-snapshot' }
+    maven { url "http://mesir.googlecode.com/svn/trunk/mavenrepo" }
+}
+
+ext {
+	slf4Version = '1.7.25'
+	springBootVersion = '2.0.0.M5'
+	hibernateVersion = '5.2.12.Final'
+    jacksonVersion = '2.9.2'
+}
+
+dependencies {
+	
+	compile(group: 'org.springframework.boot', name:'spring-boot-starter', version:"${rootProject.ext.springBootVersion}")	
+    compile(group: 'org.springframework.boot', name:'spring-boot-starter-data-jpa', version:"${rootProject.ext.springBootVersion}") {
+        exclude group: 'org.hibernate'
+    }
+    compile(group: "org.springframework.boot", name:"spring-boot-starter-jdbc", version:"${rootProject.ext.springBootVersion}") {
+        exclude module: 'HikariCP'
+    }
+    compile group: "org.springframework.boot", name:"spring-boot-starter-web", version:"${rootProject.ext.springBootVersion}"
+    compile group: "org.springframework.boot", name:"spring-boot-starter-actuator", version:"${rootProject.ext.springBootVersion}"
+    compile group: "org.springframework.boot", name:"spring-boot-starter-cache", version:"${rootProject.ext.springBootVersion}"
+    compile group: "org.springframework.boot", name:"spring-boot-starter-undertow", version:"${rootProject.ext.springBootVersion}"
+    
+    testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version:"${rootProject.ext.springBootVersion}"
+    
+    compile group: 'org.aspectj', name: 'aspectjrt', version: '1.8.10'
+    compile group: 'org.slf4j', name: 'slf4j-api', version: "${rootProject.ext.slf4Version}"
+    compile "org.slf4j:log4j-over-slf4j:${rootProject.ext.slf4Version}"
+    compile "org.slf4j:jcl-over-slf4j:${rootProject.ext.slf4Version}"
+    compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
+    
+    compile 'com.oracle:ojdbc6:11.1.0.7.0'
+    compile group: 'org.projectlombok', name: 'lombok', version: '1.16.16'
+	
+	compile group: 'commons-io', name: 'commons-io', version: '2.5'
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: rootProject.ext.jacksonVersion
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: rootProject.ext.jacksonVersion
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: rootProject.ext.jacksonVersion
+}
+
+configurations.all {
+        exclude group: "org.slf4j", module: "slf4j-log4j12"
+        exclude group: "commons-logging", module: "commons-logging"
+        exclude group: "org.springframework.boot", module: "spring-boot-starter-tomcat"
+}
